@@ -28,6 +28,7 @@ void isPresent(Dict& dict, KeyType k, ItemType i)
         BOOST_CHECK_MESSAGE(*p_i == i,
             std::to_string(k) + " should be " + i + ", but found " + *p_i);
     }
+
 }
 
 void isAbsent(Dict& dict, KeyType k)

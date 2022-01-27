@@ -11,47 +11,6 @@ struct BST::Node
     Node* rightChild;
 }; // A struct to store the key, item and the pointers to the next nodes
 
-BST::BST(const BST & originalTree)
-{
-    this->root = deepCopy(originalTree.root);
-}
-// See deepCopy for complexity
-
-BST::~BST()
-{
-    deepDelete(root);
-}
-// See deepDelete for complexity
-
-BST & BST::operator=(const BST & originalTree)
-{
-    if (this != &originalTree)
-    {
-        deepDelete(this->root);
-    }
-    this->root = deepCopy(originalTree.root);
-    return *this;
-}
-// Either deepDelete + deepCopy or just deepCopy
-// See both
-
-BST::BST(BST && originalTree)
-{
-    this->root = originalTree.root;
-    originalTree.root = leaf();
-}
-// Sets a pointer so always O(1)
-
-BST & BST::operator=(BST && originalTree)
-{
-    this->root = originalTree.root;
-    if (this != &originalTree)
-    {
-        originalTree.root = leaf();
-    }
-    return *this;
-}
-// Sets up to two pointers so always O(1)
 
 BST::Node* BST::leaf()
 {
@@ -154,6 +113,11 @@ void BST::remove(KeyType soughtKey)
         }
     }
 }
+/*
+ * Best case root is only entry - O(1)
+ * Average and worse case - see removeRec
+*/
+
 void BST::removeRec(Node * & currentNode, KeyType soughtKey)
 {
     if (!isLeaf(currentNode))
@@ -195,6 +159,11 @@ void BST::removeRec(Node * & currentNode, KeyType soughtKey)
         }
     }
 }
+/*
+ * Best case the current node has no children - O(1)
+ * Worst case has to visit every node right heavy- O(n)
+ * Average case O(log(n)) (balanced tree)
+*/
 
 BST::Node* BST::detachMinimumNode(Node * & currentNode)
 {
@@ -210,6 +179,11 @@ BST::Node* BST::detachMinimumNode(Node * & currentNode)
         return detachMinimumNode(currentNode->leftChild);
     }
 }
+/*
+ * Best case only one node - O(1)
+ * Worst case unbalanced tree - O(n)
+ * Average case O(log2(n)) (balanced tree) (lookupRec but always goes left)
+*/
 void BST::displayEntries()
 {
     inOrderTraversal(this->root);
@@ -235,6 +209,13 @@ void BST::inOrderTraversal(Node * & currentNode)
         }
     }
 }
+
+/*
+ * Must visit every node with parents being visited up to three times
+ * Best case O(1) if tree just has left node
+ * Worst case [O(2^n)] because if tree only has right branches
+ * Average case O(n)average tree may have to traverse right at times but not substantial enough to be exponential
+*/
 
 void BST::displayTree()
 {
@@ -294,9 +275,8 @@ void BST::deepDelete(Node * current)
     }
 }
 /*
- * Visits every node only once
- * Always O(n)
- * Best case n = 1 so O(1)
+ Always O(n) unless depth/height > 1
+ Best case with depth 1 so it would be O(1)
 */
 
 BST::Node* BST::deepCopy(Node * originalNode)
@@ -311,7 +291,50 @@ BST::Node* BST::deepCopy(Node * originalNode)
     return originalNode;
 }
 /*
- * Visits every node only once
- * Always O(n)
- * Best case n = 1 so O(1)
+ Always O(n) unless depth/height > 1
+ Best case with depth 1 so it would be O(1)
 */
+
+//week 5 move functionalities
+
+BST::BST(const BST & originalTree)
+{
+    this->root = deepCopy(originalTree.root);
+}
+// same time complexity as deepcopy
+
+BST::~BST()
+{
+    deepDelete(root);
+}
+// same time complexity as deep delete
+
+BST & BST::operator=(const BST & bstToCopy)
+{
+    if (this != &bstToCopy)
+    {
+        deepDelete(this->root);
+    }
+    this->root = deepCopy(bstToCopy.root);
+    return *this;
+}
+// same time complexity of deepDelete and/or deepCopy
+
+
+BST::BST(BST && originalTree)
+{
+    this->root = originalTree.root;
+    originalTree.root = leaf();
+}
+// Sets a pointer so always O(1)
+
+BST & BST::operator=(BST && bstToMove)
+{
+    this->root = bstToMove.root;
+    if (this != &bstToMove)
+    {
+        bstToMove.root = leaf();
+    }
+    return *this;
+}
+// Sets up to two pointers so always O(1)
