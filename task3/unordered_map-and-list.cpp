@@ -1,4 +1,4 @@
-#include "unordered_map-and-list.h"
+ #include "unordered_map-and-list.h"
 
 #include <algorithm>
 #include <fstream>
@@ -11,45 +11,88 @@ UnorderedMapandList::UnorderedMapandList(std::string fileName)
     this->fileName = fileName;
     this->firstBrick.first = "";
     this->firstBrick.second = "";
-    Load_Data();
+    Format_Data();
 }
 
-void UnorderedMapandList::Change_File(std::string newFileName)
+/*void UnorderedMapandList::Get_New_File(std::string newfile)
 {
-    this->fileName = newFileName;
+    this->fileName = newfile;
     Load_Data();
-}
+}*/
 
-void UnorderedMapandList::Load_Data()
+void UnorderedMapandList::Format_Data()
 {
     this->unsortedData.clear();
 
+    std::ifstream inputPairsFile;
+    inputPairsFile.open(fileName);
+
     std::string line;
-    std::ifstream inputFile;
-    inputFile.open(fileName);
+    std::string north;
+    std::string south;
 
-    while (std::getline(inputFile, line))
+    while (std::getline(inputPairsFile, line))
     {
-        std::istringstream myStrStream(line);
-        std::string south, north;
-        std::getline(myStrStream, north, ',');
-        std::getline(myStrStream, south, ',');
+        std::istringstream ss(line);
+        std::getline(ss, north, ',');
+        std::getline(ss, south, ',');
 
-        // Sets a starting point for later use
-        // Had difficulty using begin() which is why this is done
+        // starting point for unsorted data list
         if (firstBrick.first == "")
         {
             this->firstBrick.first = north;
             this->firstBrick.second = south;
         }
-
         this->unsortedData.insert(std::make_pair(north, south));
     }
-
-    inputFile.close();
+    inputPairsFile.close();
 }
 
-void UnorderedMapandList::Invert_Data()
+std::pair<std::string, std::string> UnorderedMapandList::Discover_Bricks(std::string key)
+{
+    auto empty = std::make_pair("","");
+
+    // iterator to found brick location
+    auto foundBrick = this->unsortedData.find(key);
+    if (foundBrick != unsortedData.end())
+    {
+        // Creates a new pair
+        std::pair<std::string, std::string> nextBrick;
+        nextBrick.first = foundBrick->first;
+        nextBrick.second = foundBrick->second;
+        // Deletes the old pair from the structure
+        this->unsortedData.erase(foundBrick);
+        return nextBrick;
+    }
+    // Brick wasn't found
+    else
+    {
+        return empty;
+    }
+}
+
+void UnorderedMapandList::Easternmost_Sort()
+{
+    std::pair<std::string, std::string> currentBrick = this->firstBrick;
+    this->sortedData.push_back(currentBrick.second);
+    bool sortingeastwards = true;
+
+    // iterates to the east, stops when there are no more bricks
+    while (sortingeastwards)
+    {
+        currentBrick = Discover_Bricks(currentBrick.second);
+        // occurs if brick was not found
+        if (currentBrick.first == "")
+        {
+            sortingeastwards = false;
+        }
+        else
+        {
+            this->sortedData.push_back(currentBrick.second);
+        }
+    }
+}
+void UnorderedMapandList::Pair_Inversion()
 {
     std::unordered_map<std::string, std::string> invertedData;
 
@@ -59,68 +102,19 @@ void UnorderedMapandList::Invert_Data()
     }
     this->unsortedData = invertedData;
 }
-
-void UnorderedMapandList::Print_Sorted_Bricks()
+void UnorderedMapandList::Westernmost_Sort()
 {
-    // Found this from a stackoverflow response:
-    // https://stackoverflow.com/questions/16229729/printing-out-contents-of-a-list-from-the-c-list-library
-    // It is fairly compact and doesn't require explicit use of iterators
-    for (auto brick : this->sortedData)
-    {
-        std::cout << brick << std::endl;
-    }
-}
-
-void UnorderedMapandList::Sort_Bricks()
-{
-    // Sorts the bricks going West to East
-    Sort_Eastern();
-
-    Invert_Data();
-
-    // Sorts the bricks going East to West
-    Sort_Western();
-}
-
-void UnorderedMapandList::Sort_Eastern()
-{
-    bool sorting = true;
-    // Declared outside of the loop to allow for longer persisted values
     std::pair<std::string, std::string> currentBrick = this->firstBrick;
+    bool sortingwestwards = true;
 
-    this->sortedData.push_back(currentBrick.second);
-
-    // Keeps looping until the Eastern most brick is reached
-    while (sorting)
+    // iterates to the west, stops when there are no more bricks
+    while (sortingwestwards)
     {
-        currentBrick = Find_Next_Brick(currentBrick.second);
+        currentBrick = Discover_Bricks(currentBrick.second);
         // Next brick was not found
         if (currentBrick.first == "")
         {
-            sorting = false;
-        }
-        else
-        {
-            this->sortedData.push_back(currentBrick.second);
-        }
-    }
-}
-
-void UnorderedMapandList::Sort_Western()
-{
-    bool sorting = true;
-    // Declared outside of the loop to allow for longer persisted values
-    std::pair<std::string, std::string> currentBrick = this->firstBrick;
-
-    // Keeps looping until the Western most brick is reached
-
-    while (sorting)
-    {
-        currentBrick = Find_Next_Brick(currentBrick.second);
-        // Next brick was not found
-        if (currentBrick.first == "")
-        {
-            sorting = false;
+            sortingwestwards = false;
         }
         else
         {
@@ -129,24 +123,27 @@ void UnorderedMapandList::Sort_Western()
     }
 }
 
-std::pair<std::string, std::string> UnorderedMapandList::Find_Next_Brick(std::string key)
+void UnorderedMapandList::Sort_Bricks()
 {
-    // Creates an iterator to the found location
-    auto found = this->unsortedData.find(key);
-    if (found != unsortedData.end())
+    // Sorts the bricks going East
+    Easternmost_Sort();
+
+    //invert pars to
+    Pair_Inversion();
+
+    // Sorts the bricks going West
+    Westernmost_Sort();
+
+}
+void UnorderedMapandList::Print_Sorted_Bricks()
+{
+    for (auto brick : this->sortedData)
     {
-        // Creates a new pair
-        std::pair<std::string, std::string> nextBrick;
-        nextBrick.first = found->first;
-        nextBrick.second = found->second;
-        // Deletes the old pair from the structure
-        this->unsortedData.erase(found);
-        return nextBrick;
-    }
-    // Brick wasn't found
-    else
-    {
-        return std::make_pair("", "");
+        std::cout << brick << std::endl;
     }
 }
+
+
+
+
 
