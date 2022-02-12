@@ -12,6 +12,8 @@ public:
     void Get_New_File(std::string);
     void Sort_Bricks();
     void Print_Sorted_Bricks();
+    void Timing_UnorderedMap_List(std::string);
+
 private:
     std::string fileName;
     std::unordered_map<std::string, std::string> unsortedData;
