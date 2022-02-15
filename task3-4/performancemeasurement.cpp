@@ -2,13 +2,16 @@
 #include <chrono>
 #include <fstream>
 #include <string>
-
+#include <iomanip>
+#include <cmath>
+#include <limits>
 #include "unordered_map-and-list.h"
 #include "map-and-list.h"
 
 
 using std::chrono::steady_clock;
-using std::chrono::nanoseconds;
+using std::chrono::milliseconds;
+using std::chrono::duration;
 using std::chrono::duration_cast;
 using std::ofstream;
 using std::string;
@@ -23,9 +26,11 @@ void UnorderedMapandList::Timing_UnorderedMap_List(std::string fileName)
 
    auto t2 = std::chrono::high_resolution_clock::now();
 
+   duration<double, std::milli> ms_double = t2 - t1;
+
    std::cout << "sorting bricks with UnorderedMap and list took: "
-              << std::chrono::duration_cast<std::chrono::nanoseconds>(t2-t1).count()
-              << " nanoseconds" << std::endl;
+              << ms_double.count()
+              << " milliseconds" << std::endl;
 
 }
 
@@ -39,8 +44,11 @@ void MapandList::Timing_Map_List(std::string fileName)
 
    auto t2 = std::chrono::high_resolution_clock::now();
 
-   std::cout << "sorting bricks with Map and list took: "
-              << std::chrono::duration_cast<std::chrono::nanoseconds>(t2-t1).count()
-              << " nanoseconds" << std::endl;
+   duration<double, std::milli> ms_double = t2 - t1;
+
+   std::cout << "sorting bricks with Map and list took: " <<
+                std::setprecision(3)
+              << ms_double.count()
+              << " milliseconds" << std::endl;
 
 }
