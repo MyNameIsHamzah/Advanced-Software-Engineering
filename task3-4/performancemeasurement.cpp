@@ -46,8 +46,7 @@ void MapandList::Timing_Map_List(std::string fileName)
 
    duration<double, std::milli> ms_double = t2 - t1;
 
-   std::cout << "sorting bricks with Map and list took: " <<
-                std::setprecision(3)
+   std::cout << "sorting bricks with Map and list took: "
               << ms_double.count()
               << " milliseconds" << std::endl;
 

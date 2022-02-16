@@ -6,7 +6,7 @@
 
 //TASK3
 
-/*int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     //Unordered_map and list implementation
     //UnorderedMapandList *myUnorderedMapList = new UnorderedMapandList(argv[1]);
@@ -20,9 +20,11 @@
 
     return 0;
 }
-*/
+
+
 //TASK4
 
+/*
 int main(int argc, char *argv[])
 {
     //timing unorderedmap and list implementation
@@ -31,8 +33,9 @@ int main(int argc, char *argv[])
 
 
     //timing map and list implementation
-    MapandList *myMapandList = new MapandList(argv[1]);
-    myMapandList->Timing_Map_List(argv[1]);
+    //MapandList *myMapandList = new MapandList(argv[1]);
+    //myMapandList->Timing_Map_List(argv[1]);
 
     return 0;
 }
+*/
