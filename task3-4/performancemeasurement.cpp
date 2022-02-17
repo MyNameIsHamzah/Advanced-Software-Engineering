@@ -18,9 +18,10 @@ using std::string;
 
 void UnorderedMapandList::Timing_UnorderedMap_List(std::string fileName)
 {
-   UnorderedMapandList *dict = new UnorderedMapandList(fileName);
 
    auto t1 = std::chrono::high_resolution_clock::now();
+
+   UnorderedMapandList *dict = new UnorderedMapandList(fileName);
 
    dict->Sort_Bricks();
 
@@ -36,9 +37,9 @@ void UnorderedMapandList::Timing_UnorderedMap_List(std::string fileName)
 
 void MapandList::Timing_Map_List(std::string fileName)
 {
-   MapandList *dict = new MapandList(fileName);
-
    auto t1 = std::chrono::high_resolution_clock::now();
+
+   MapandList *dict = new MapandList(fileName);
 
    dict->Sort_Bricks();
 

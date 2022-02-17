@@ -9,9 +9,9 @@
 int main(int argc, char *argv[])
 {
     //Unordered_map and list implementation
-    //UnorderedMapandList *myUnorderedMapList = new UnorderedMapandList(argv[1]);
-    //myUnorderedMapList->Sort_Bricks();
-    //myUnorderedMapList->Print_Sorted_Bricks();
+    UnorderedMapandList *myUnorderedMapList = new UnorderedMapandList(argv[1]);
+    myUnorderedMapList->Sort_Bricks();
+    myUnorderedMapList->Print_Sorted_Bricks();
 
     //map and list implementation
     //MapandList *myMapandList = new MapandList(argv[1]);
