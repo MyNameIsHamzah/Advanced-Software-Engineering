@@ -9,33 +9,30 @@ struct BST::Node
     BST::ItemType item;
     Node* leftChild;
     Node* rightChild;
-}; // A struct to store the key, item and the pointers to the next nodes
-
-
-BST::Node* BST::leaf()
-{
-    return nullptr;
-} // Just used as a way of describing when a node has become null
-
-bool BST::isLeaf(Node* n)
-{
-    return (n == nullptr);
-} // Returns true if the node is a nullptr
+};
 
 BST::Node::Node(KeyType key, ItemType item)
 {
     this->key = key;
     this->item = item;
-    // Errors can occur if the children are not explicitly set as leaves when initialised
     this->leftChild = BST::leaf();
     this->rightChild = BST::leaf();
-} // Sets up the Node type and makes sure that the children are nullptrs
+}
+
+BST::Node* BST::leaf()
+{
+    return nullptr;
+}
+
+bool BST::isLeaf(Node* n)
+{
+    return (n == nullptr);
+}
 
 BST::ItemType* BST::lookup(KeyType soughtKey)
 {
     return lookupRec(soughtKey, this->root);
-} // Essentially used like an API to interact with the recursive function
-// See lookupRec for complexity
+}
 
 BST::ItemType* BST::lookupRec(KeyType soughtKey, Node* currentNode)
 {
@@ -55,33 +52,25 @@ BST::ItemType* BST::lookupRec(KeyType soughtKey, Node* currentNode)
         }
     }
     return nullptr;
-} // Recursively searches the BST to return the location in memory of the item
-/*
- * Average is O(log(n)) (for balanced tree)
- * Worst case is tree is unbalanced - O(n)
- * Best case is desired node is root O(1)
-*/
+}
 
 void BST::insert(KeyType newKey, ItemType newItem)
 {
     insertRec(newKey, newItem, this->root);
-} // The wrapper used to insert a new item into a sorted BST
-// See insertRec for complexity
+}
 
 void BST::insertRec(KeyType newKey, ItemType newItem, Node* &currentNode)
 {
-    // If the current node is a nullptr then the new item can be inserted
     if (isLeaf(currentNode))
     {
         Node* newNode = new Node(newKey, newItem);
         currentNode = newNode;
     }
-    // This implementation overwrites existing items if a matching key is found
     else if (newKey == currentNode->key)
     {
         currentNode->item = newItem;
     }
-    else if (newKey < currentNode->key)        // Only runs the recursive function if the BST is not a single entry
+    else if (newKey < currentNode->key)
 
     {
         insertRec(newKey, newItem, currentNode->leftChild);
@@ -91,12 +80,6 @@ void BST::insertRec(KeyType newKey, ItemType newItem, Node* &currentNode)
         insertRec(newKey, newItem, currentNode->rightChild);
     }
 }
-
-/*
- * Average is O(log(n)) (for balanced tree)
- * Worst case is tree is unbalanced - O(n)
- * Best case is tree is empty O(1)
-*/
 
 void BST::remove(KeyType soughtKey)
 {
@@ -113,10 +96,6 @@ void BST::remove(KeyType soughtKey)
         }
     }
 }
-/*
- * Best case root is only entry - O(1)
- * Average and worse case - see removeRec
-*/
 
 void BST::removeRec(Node * & currentNode, KeyType soughtKey)
 {
@@ -135,7 +114,6 @@ void BST::removeRec(Node * & currentNode, KeyType soughtKey)
             {
                 currentNode = leaf();
             }
-            // Points at the next node in line
             else if(!isLeaf(currentNode->leftChild))
             {
                 Node* tempNode = currentNode;
@@ -159,11 +137,7 @@ void BST::removeRec(Node * & currentNode, KeyType soughtKey)
         }
     }
 }
-/*
- * Best case the current node has no children - O(1)
- * Worst case has to visit every node right heavy- O(n)
- * Average case O(log(n)) (balanced tree)
-*/
+
 
 BST::Node* BST::detachMinimumNode(Node * & currentNode)
 {
@@ -179,19 +153,14 @@ BST::Node* BST::detachMinimumNode(Node * & currentNode)
         return detachMinimumNode(currentNode->leftChild);
     }
 }
-/*
- * Best case only one node - O(1)
- * Worst case unbalanced tree - O(n)
- * Average case O(log2(n)) (balanced tree) (lookupRec but always goes left)
-*/
+
 void BST::displayEntries()
 {
     inOrderTraversal(this->root);
-} // Used as a wrapper to display the BST in key order
+}
 
 void BST::inOrderTraversal(Node * & currentNode)
 {
-    // Prevents memory access violations when the current node is a nullptr
     if (!isLeaf(currentNode))
     {
         // Traverses the left branch
@@ -210,59 +179,42 @@ void BST::inOrderTraversal(Node * & currentNode)
     }
 }
 
-/*
- * Must visit every node with parents being visited up to three times
- * Best case O(1) if tree just has left node
- * Worst case [O(2^n)] because if tree only has right branches
- * Average case O(n)average tree may have to traverse right at times but not substantial enough to be exponential
-*/
-
 void BST::displayTree()
 {
     if (!isLeaf(root))
     {
-        preOrderDisplay(this->root, "");
+        preOrderTraversal(this->root, "");
     }
     else
     {
         std::cout << '*' << std::endl;
     }
-} // Used to print the tree graphically(ish)
+}
 
-void BST::preOrderDisplay(Node * &currentNode, std::string whiteSpace)
+void BST::preOrderTraversal(Node * &currentNode, std::string tab)
 {
-    // 'whiteSpace' is used to help with the display formatting
+    tab += "\t";
 
-    std::cout << whiteSpace << currentNode->key << std::endl;
+    std::cout << tab << currentNode->key << std::endl;
 
-    // Effectively increments the whitespace
-    whiteSpace += "\t";
-
-    // Traverses the left branch or prints '*' if the branch stops there
     if (!isLeaf(currentNode->leftChild))
     {
-        preOrderDisplay(currentNode->leftChild, whiteSpace);
+        preOrderTraversal(currentNode->leftChild, tab);
     }
     else
     {
-       std::cout << whiteSpace << "*" << std::endl;
+       std::cout << tab << "*" << std::endl;
     }
 
-    // Traverses the right branch or prints '*' if the branch stops there
     if (!isLeaf(currentNode->rightChild))
     {
-        preOrderDisplay(currentNode->rightChild, whiteSpace);
+        preOrderTraversal(currentNode->rightChild, tab);
     }
     else
     {
-        std::cout << whiteSpace << "*" << std::endl;
+        std::cout << tab << "*" << std::endl;
     }
-} // Prints the tree in its graphical form
-/*
- * Visits every node only once
- * Always O(n)
- * Best case n = 1 so O(1)
-*/
+}
 
 void BST::deepDelete(Node * current)
 {
@@ -274,10 +226,6 @@ void BST::deepDelete(Node * current)
         delete(current);
     }
 }
-/*
- Always O(n) unless depth/height > 1
- Best case with depth 1 so it would be O(1)
-*/
 
 BST::Node* BST::deepCopy(Node * originalNode)
 {
@@ -290,10 +238,7 @@ BST::Node* BST::deepCopy(Node * originalNode)
     }
     return originalNode;
 }
-/*
- Always O(n) unless depth/height > 1
- Best case with depth 1 so it would be O(1)
-*/
+
 
 //week 5 move functionalities
 
@@ -318,7 +263,7 @@ BST & BST::operator=(const BST & bstToCopy)
     this->root = deepCopy(bstToCopy.root);
     return *this;
 }
-// same time complexity of deepDelete and/or deepCopy
+// same time complexity of deepDelete and deepCopy O(2), simplifies to O(1)
 
 
 BST::BST(BST && originalTree)
@@ -326,7 +271,7 @@ BST::BST(BST && originalTree)
     this->root = originalTree.root;
     originalTree.root = leaf();
 }
-// Sets a pointer so always O(1)
+//O(1)
 
 BST & BST::operator=(BST && bstToMove)
 {
@@ -337,4 +282,4 @@ BST & BST::operator=(BST && bstToMove)
     }
     return *this;
 }
-// Sets up to two pointers so always O(1)
+//O(1)

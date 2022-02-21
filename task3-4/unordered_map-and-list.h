@@ -8,22 +8,22 @@
 class UnorderedMapandList
 {
 public:
-    UnorderedMapandList(std::string);
-    void Get_New_File(std::string);
+    void Timing_UnorderedMap_List(std::string);
     void Sort_Bricks();
     void Print_Sorted_Bricks();
-    void Timing_UnorderedMap_List(std::string);
+    UnorderedMapandList(std::string);
 
 private:
-    std::string fileName;
-    std::unordered_map<std::string, std::string> unsortedData;
-    std::list< std::string> sortedData;
-    std::pair<std::string, std::string> firstBrick;
     void Format_Data();
     void Pair_Inversion();
     void Easternmost_Sort();
     void Westernmost_Sort();
+    std::string fileName;
+    std::unordered_map<std::string, std::string> unsortedBricks;
+    std::list< std::string> sortedBricks;
+    std::pair<std::string, std::string> firstBrick;
     std::pair<std::string, std::string> Discover_Bricks(std::string);
+
 };
 
 

@@ -22,7 +22,7 @@ MapandList::MapandList(std::string fileName)
 
 void MapandList::Format_Data()
 {
-   this->unsortedData.clear();
+   this->unsortedBricks.clear();
 
    std::ifstream inputPairsFile;
    inputPairsFile.open(fileName);
@@ -43,52 +43,53 @@ void MapandList::Format_Data()
            this->firstBrick.first = north;
            this->firstBrick.second = south;
        }
-       this->unsortedData.insert(std::make_pair(north, south));
+       this->unsortedBricks.insert(std::make_pair(north, south));
    }
    inputPairsFile.close();
 }
 
 std::pair<std::string, std::string> MapandList::Discover_Bricks(std::string key)
 {
-   auto empty = std::make_pair("","");
+   auto na = std::make_pair("","");
 
-   // iterator to found brick location
-   auto foundBrick = this->unsortedData.find(key);
-   if (foundBrick != unsortedData.end())
+   // iterator to found brick
+   auto foundBrick = this->unsortedBricks.find(key);
+   if (foundBrick != unsortedBricks.end())
    {
-       // Creates a new pair
        std::pair<std::string, std::string> nextBrick;
        nextBrick.first = foundBrick->first;
        nextBrick.second = foundBrick->second;
-       // Deletes the old pair from the structure
-       this->unsortedData.erase(foundBrick);
+
+       // Deletes found brick, so less elements to iterate as time goes on: theoretically shouldt make a difference
+
+       this->unsortedBricks.erase(foundBrick);
        return nextBrick;
    }
-   // Brick wasn't found
+   // not found
    else
    {
-       return empty;
+       return na;
    }
 }
 
 void MapandList::Easternmost_Sort()
 {
    std::pair<std::string, std::string> currentBrick = this->firstBrick;
-   this->sortedData.push_back(currentBrick.second);
+   this->sortedBricks.push_back(currentBrick.second);
    bool sortingeastwards = true;
 
    // iterates to the east, stops when there are no more bricks
    while (sortingeastwards)
    {
        currentBrick = Discover_Bricks(currentBrick.second);
-       // occurs if brick was not found
+       //brick was not found
        if (currentBrick.first == "")
        {
            sortingeastwards = false;
        }
        else
        {
-           this->sortedData.push_back(currentBrick.second);
+           this->sortedBricks.push_back(currentBrick.second);
        }
    }
 }
@@ -96,11 +97,11 @@ void MapandList::Pair_Inversion()
 {
    std::map<std::string, std::string> invertedData;
 
-   for (auto brick : this->unsortedData)
+   for (auto brick : this->unsortedBricks)
    {
        invertedData.insert(std::make_pair(brick.second, brick.first));
    }
-   this->unsortedData = invertedData;
+   this->unsortedBricks = invertedData;
 }
 void MapandList::Westernmost_Sort()
 {
@@ -111,14 +112,14 @@ void MapandList::Westernmost_Sort()
    while (sortingwestwards)
    {
        currentBrick = Discover_Bricks(currentBrick.second);
-       // Next brick was not found
+       //brick was not found
        if (currentBrick.first == "")
        {
            sortingwestwards = false;
        }
        else
        {
-           this->sortedData.push_front(currentBrick.second);
+           this->sortedBricks.push_front(currentBrick.second);
        }
    }
 }
@@ -128,7 +129,7 @@ void MapandList::Sort_Bricks()
    // Sorts the bricks going East
    Easternmost_Sort();
 
-   //invert pars to
+   //invert pairs for western sort
    Pair_Inversion();
 
    // Sorts the bricks going West
@@ -137,7 +138,7 @@ void MapandList::Sort_Bricks()
 }
 void MapandList::Print_Sorted_Bricks()
 {
-   for (auto brick : this->sortedData)
+   for (auto brick : this->sortedBricks)
    {
        std::cout << brick << std::endl;
    }
