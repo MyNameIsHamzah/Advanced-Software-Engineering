@@ -52,14 +52,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../task3-4/main.cpp \
-		../task3-4/map-and-list.cpp \
-		../task3-4/performancemeasurement.cpp \
-		../task3-4/unordered_map-and-list.cpp 
-OBJECTS       = main.o \
-		map-and-list.o \
-		performancemeasurement.o \
-		unordered_map-and-list.o
+SOURCES       = ../task3-4/main.cpp 
+OBJECTS       = main.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -132,11 +126,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../task3-4/task3.pro map-and-list.h \
-		unordered_map-and-list.h ../task3-4/main.cpp \
-		../task3-4/map-and-list.cpp \
-		../task3-4/performancemeasurement.cpp \
-		../task3-4/unordered_map-and-list.cpp
+		../task3-4/task3.pro  ../task3-4/main.cpp
 QMAKE_TARGET  = task3
 DESTDIR       = 
 TARGET        = task3
@@ -338,19 +328,8 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../task3-4/main.cpp ../task3-4/unordered_map-and-list.h \
-		../task3-4/map-and-list.h
+main.o: ../task3-4/main.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../task3-4/main.cpp
-
-map-and-list.o: ../task3-4/map-and-list.cpp ../task3-4/map-and-list.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o map-and-list.o ../task3-4/map-and-list.cpp
-
-performancemeasurement.o: ../task3-4/performancemeasurement.cpp ../task3-4/unordered_map-and-list.h \
-		../task3-4/map-and-list.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o performancemeasurement.o ../task3-4/performancemeasurement.cpp
-
-unordered_map-and-list.o: ../task3-4/unordered_map-and-list.cpp ../task3-4/unordered_map-and-list.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o unordered_map-and-list.o ../task3-4/unordered_map-and-list.cpp
 
 ####### Install
 

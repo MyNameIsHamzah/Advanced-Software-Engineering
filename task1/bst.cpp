@@ -248,11 +248,6 @@ BST::BST(const BST & originalTree)
 }
 // same time complexity as deepcopy
 
-BST::~BST()
-{
-    deepDelete(root);
-}
-// same time complexity as deep delete
 
 BST & BST::operator=(const BST & bstToCopy)
 {
@@ -265,6 +260,11 @@ BST & BST::operator=(const BST & bstToCopy)
 }
 // same time complexity of deepDelete and deepCopy O(2), simplifies to O(1)
 
+BST::~BST()
+{
+    deepDelete(root);
+}
+// same time complexity as deep delete
 
 BST::BST(BST && originalTree)
 {
